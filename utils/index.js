@@ -32,7 +32,7 @@ function decryptWithPrivateKey(privateKey, encryptedData, passphrase) {
         {
             key: privateKey,
             passphrase: "123456", // 如果私钥有密码，必须提供
-            padding: crypto.constants.RSA_PKCS1_PADDING,
+            padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
             oaepHash: 'sha256'
         },
         buffer

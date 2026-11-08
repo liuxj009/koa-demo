@@ -1,32 +1,9 @@
 const http = require('node:http');
-const {connection} = require('./database/connectMysql');
-const pl1 = async (context,next)=>{
-    console.log("pl1");
-    await next();
-    console.log("pl1 end");
-    context.res.end("es pl1 end");
-}
+const {router} = require('./routers/index.js');
 
-const pl2 = async (context,next)=>{
-    console.log("pl2");
-    await next();
-    console.log("pl2 end");
 
-}
-
-const pl3 = async (context,next)=>{
-    console.log("pl3");
-     connection.query("select * from orders",(err,res)=>{
-        if (err){
-            console.log("query error",err);
-        }
-        console.log("query",res);
-     });
-}
-const plugins = [
-    pl1,
-    pl2,
-    pl3
+const plugins  = [
+    router.routes(),
 ]
 const compose =  async (context)=>{
     let index = 0;
@@ -40,8 +17,7 @@ const compose =  async (context)=>{
     await next();
 }
 const handleRequest = (req,res)=>{
-    console.log("req",req);
-    console.log("res",res);
+    console.log("req",req.url);
     const context = {
         req,
         res,

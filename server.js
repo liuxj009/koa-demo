@@ -1,8 +1,14 @@
 const Koa = require('koa');
 const Router = require('@koa/router');
 const bodyParser = require('koa-bodyparser');
+const { getPublicKey, decryptWithPrivateKey } = require('./utils/index.js');
+const cors = require('@koa/cors');
+
 
 const app = new Koa();
+
+const { publicKey, privateKey } = getPublicKey();
+
 app.silent = false;
 
 // 1. 错误兜底（必须最前）
@@ -37,8 +43,21 @@ router.post('/login', async (ctx) => {
     ctx.body = { id: ctx.params.id, q: ctx.query };
 });
 router.post('/getPublicKey', async (ctx) => {
-    ctx.body = { publicKey: 'publicKey' };
+    ctx.body = { publicKey, publicKey };
 });
+router.post('/encrypt', async (ctx) => {
+    const { token } = ctx.request.body;
+    console.log("token", token);
+    const decryptData = decryptWithPrivateKey(privateKey, token, "123456");
+    ctx.body = { publicKey, decryptData: decryptData.toString('utf-8') };
+});
+
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST'],
+    headers: ['Content-Type'],
+    credentials: true,
+}));
 app.use(router.routes()).use(router.allowedMethods());
 
 app.listen(3000);

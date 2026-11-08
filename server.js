@@ -1,13 +1,12 @@
 const Koa = require('koa');
-const Router = require('@koa/router');
 const bodyParser = require('koa-bodyparser');
-const { getPublicKey, decryptWithPrivateKey } = require('./utils/index.js');
 const cors = require('@koa/cors');
+
+const mainRouter = require('./routers/index.js');
+const { publicKey, decryptWithPrivateKey } = require('./utils/cryptoUtils.js');
 
 
 const app = new Koa();
-
-const { publicKey, privateKey } = getPublicKey();
 
 app.silent = false;
 
@@ -35,29 +34,12 @@ app.use(async (ctx, next) => {
 app.use(bodyParser());
 
 // 4. 路由
-const router = new Router();
-router.get('/users/:id', async (ctx) => {
-    ctx.body = { id: ctx.params.id, q: ctx.query };
-});
-router.post('/login', async (ctx) => {
-    ctx.body = { id: ctx.params.id, q: ctx.query };
-});
-router.post('/getPublicKey', async (ctx) => {
-    ctx.body = { publicKey, publicKey };
-});
-router.post('/encrypt', async (ctx) => {
-    const { token } = ctx.request.body;
-    console.log("token", token);
-    const decryptData = decryptWithPrivateKey(privateKey, token, "123456");
-    ctx.body = { publicKey, decryptData: decryptData.toString('utf-8') };
-});
-
 app.use(cors({
     origin: '*',
     methods: ['GET', 'POST'],
     headers: ['Content-Type'],
     credentials: true,
 }));
-app.use(router.routes()).use(router.allowedMethods());
+app.use(mainRouter.routes()).use(mainRouter.allowedMethods());
 
 app.listen(3000);

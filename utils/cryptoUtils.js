@@ -1,8 +1,13 @@
 const crypto = require('crypto');
 
+let publicKey = "";
+let privateKey = "";
 
-const getPublicKey = () => {
-    const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa',{
+const getKeys = async () => {
+    if(publicKey && privateKey){
+        return { publicKey, privateKey };
+    }
+    const { publicKey: publicKeyStr, privateKey: privateKeyStr } = crypto.generateKeyPairSync('rsa', {
         modulusLength: 2048,
         publicKeyEncoding: {
             type: 'spki',
@@ -15,17 +20,11 @@ const getPublicKey = () => {
             passphrase: '123456' // 私钥保护密码
         }
     });
+    publicKey = publicKeyStr;
+    privateKey = privateKeyStr;
     return { publicKey, privateKey };
 }
-
-/**
- * 使用私钥解密数据
- * @param {string} privateKey - PEM格式的私钥
- * @param {string} encryptedData - Base64编码的密文
- * @param {string} passphrase - 私钥保护密码（如果生成时设置了）
- * @returns {string} 解密后的明文
- */
-function decryptWithPrivateKey(privateKey, encryptedData, passphrase) {
+const decryptWithPrivateKey = (encryptedData) => {
     const buffer = Buffer.from(encryptedData, 'base64');
 
     const decrypted = crypto.privateDecrypt(
@@ -40,4 +39,13 @@ function decryptWithPrivateKey(privateKey, encryptedData, passphrase) {
 
     return decrypted.toString('utf-8');
 }
-module.exports = { getPublicKey, decryptWithPrivateKey };
+const init = async () => {
+    if(publicKey && privateKey){
+        return;
+    }
+    const { publicKey, privateKey } = await getKeys();
+    publicKey = publicKey;
+    privateKey = privateKey;
+}
+
+module.exports = { getKeys, publicKey, decryptWithPrivateKey, init };

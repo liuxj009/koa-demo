@@ -1,9 +1,8 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const cors = require('@koa/cors');
-
+const static = require('koa-static');
 const mainRouter = require('./routers/index.js');
-const { publicKey, decryptWithPrivateKey } = require('./utils/cryptoUtils.js');
 
 
 const app = new Koa();
@@ -40,6 +39,9 @@ app.use(cors({
     headers: ['Content-Type'],
     credentials: true,
 }));
+
+app.use(static('./static'));
+app.use(static('./static/dist'));
 app.use(mainRouter.routes()).use(mainRouter.allowedMethods());
 
 app.listen(3000);

@@ -1,28 +1,25 @@
-const http = require('node:http');
-const {router} = require('./routers/index.js');
+const Koa = require('./myKoa/index.js');
 
-
-const plugins  = [
-    router.routes(),
-]
-const compose =  async (context)=>{
-    let index = 0;
-    const next = async () => {
-        const nextPlugin = plugins[index];
-        index++;
-        if (nextPlugin) {
-            await nextPlugin(context, next);
-        }
+const app = new Koa();
+app.use(async (ctx, next) => {
+    try {
+        console.log('start 0');
+        await next();
+        console.log('end 0');
+    } catch (error) {
+        console.log(error);
+        ctx.res.end("网络异常");
     }
+});
+app.use(async (ctx, next) => {
+    console.log('start 1');
+    // await next();
+    ctx.res.end('hello world');
+    console.log('end 1');
+});
+app.use(async (ctx, next) => {
+    console.log('start 2');
     await next();
-}
-const handleRequest = (req,res)=>{
-    console.log("req",req.url);
-    const context = {
-        req,
-        res,
-    }
-    compose(context);
-}
-const server = http.createServer(handleRequest);
-server.listen(3100);
+    console.log('end 2');
+});
+app.listen(9999);

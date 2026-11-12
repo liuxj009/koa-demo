@@ -1,0 +1,7 @@
+
+@baseUrl = http://192.168.234.67:48079/admin-api/system
+@token = "Bearer 178d3037a36c4202b6ef49bd2c10f821"
+POST {{baseUrl}}/auth/refresh-token?refreshToken=16ed524ad6ec4589a83a7247365fcb45 HTTP/1.1
+Content-Type: application/json
+Authorization: {{token}}
+

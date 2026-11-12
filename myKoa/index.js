@@ -1,6 +1,5 @@
 const http = require('node:http');
 
-
 class Koa {
     middleware = [];
     ctx = {};

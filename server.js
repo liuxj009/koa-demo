@@ -37,11 +37,10 @@ app.use(cors({
     origin: '*',
     methods: ['GET', 'POST'],
     headers: ['Content-Type'],
-    credentials: true,
 }));
 
+app.use(static('./dist'));
 app.use(static('./static'));
-app.use(static('./static/dist'));
 app.use(mainRouter.routes()).use(mainRouter.allowedMethods());
 
-app.listen(3000);
+app.listen(3002);

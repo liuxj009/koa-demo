@@ -9,4 +9,5 @@ router.post("/getPublicKey", AuthController.getPublickKey)
 router.post("/register", AuthController.register)
 
 
+
 module.exports = router;

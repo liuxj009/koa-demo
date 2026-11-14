@@ -7,6 +7,7 @@ router.post("/login", AuthController.login)
 
 router.post("/getPublicKey", AuthController.getPublickKey)
 router.post("/register", AuthController.register)
+router.get("/getUser", AuthController.getUser)
 
 
 

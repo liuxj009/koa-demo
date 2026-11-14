@@ -5,13 +5,13 @@ const {pool} = require('../config/db.js');
 
 class User {
     static async findByUsername(username) {
-        const res = await pool.query(`SELECT * FROM users WHERE username = ?`, [username]);
-        console.log("findByUsername",res);
-        return res[0];
+        const [rows] = await pool.query(`SELECT * FROM users WHERE username = ?`, [username]);
+        console.log("findByUsername",rows);
+        return rows;
     }
 
-    static async create(username, password) {
-        const res = await pool.query(`INSERT INTO users (username, password) VALUES (?, ?)`, [username, password]);
+    static async create({username, userId=111, password,id}) {
+        const res = await pool.execute(`INSERT INTO users (id,username, userId, password) VALUES (?, ?, ?, ?)`, [id,username, userId,password,id]);
         console.log("create",res);
         return res[0];
     }
